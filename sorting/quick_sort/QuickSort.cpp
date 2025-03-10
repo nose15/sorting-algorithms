@@ -6,7 +6,8 @@
 
 namespace Sorting {
     QuickSort::QuickSort(int32_t *arr, size_t size) {
-
+        this->arr = arr;
+        this->size = size;
     }
 
     int32_t* QuickSort::sort() {

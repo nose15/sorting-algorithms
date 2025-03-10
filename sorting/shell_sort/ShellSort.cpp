@@ -7,7 +7,8 @@
 
 namespace Sorting {
     ShellSort::ShellSort(int32_t *arr, size_t size) {
-        this->setArray(arr, size);
+        this->arr = arr;
+        this->size = size;
     }
 
     int32_t* ShellSort::sort() {
