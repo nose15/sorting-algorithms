@@ -13,4 +13,6 @@ add_executable(aizo_1 main.cpp
         sorting/shell_sort/ShellSort.hpp
         sorting/sorting_algorithm/SortingAlgorithm.cpp
         sorting/quick_sort/QuickSort.cpp
-        sorting/quick_sort/QuickSort.hpp)
+        sorting/quick_sort/QuickSort.hpp
+        multithreading/spinning_lock/SpinningLock.cpp
+        multithreading/spinning_lock/SpinningLock.hpp)

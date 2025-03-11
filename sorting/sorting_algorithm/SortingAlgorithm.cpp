@@ -3,15 +3,17 @@
 //
 #include "SortingAlgorithm.hpp"
 
-void Sorting::SortingAlgorithm::setArray(int32_t* arr, size_t size) {
+namespace Sorting {
+    void SortingAlgorithm::setArray(int32_t* arr, size_t size) {
 
-}
+    }
 
-Sorting::SortingAlgorithm::SortingAlgorithm() {
-    arr = nullptr;
-    size = 0;
-}
+    SortingAlgorithm::SortingAlgorithm() {
+        arr = nullptr;
+        size = 0;
+    }
 
-Sorting::SortingAlgorithm::~SortingAlgorithm() {
-    delete this->arr;
+    SortingAlgorithm::~SortingAlgorithm() {
+        delete this->arr;
+    }
 }
