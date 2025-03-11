@@ -15,4 +15,7 @@ add_executable(aizo_1 main.cpp
         sorting/quick_sort/QuickSort.cpp
         sorting/quick_sort/QuickSort.hpp
         multithreading/spinning_lock/SpinningLock.cpp
-        multithreading/spinning_lock/SpinningLock.hpp)
+        multithreading/spinning_lock/SpinningLock.hpp
+        multithreading/blocking_queue/BlockingQueue.hpp
+        multithreading/linked_list/LinkedList.hpp
+        multithreading/linked_list/Node.hpp)

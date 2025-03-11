@@ -8,7 +8,6 @@
 #include <atomic>
 
 namespace MultiThreading {
-
     class SpinningLock {
     private:
         std::atomic_flag lock_flag = ATOMIC_FLAG_INIT;
