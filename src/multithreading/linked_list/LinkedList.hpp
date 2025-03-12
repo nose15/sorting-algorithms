@@ -45,7 +45,7 @@ namespace MultiThreading {
 
     template<typename T>
     void LinkedList<T>::push_front(std::unique_ptr<T> elem) {
-        Node<T>* newNode = new Node<T>();
+        auto* newNode = new Node<T>();
         newNode->val = std::move(elem);
         newNode->next = nullptr;
         newNode->prev = nullptr;
