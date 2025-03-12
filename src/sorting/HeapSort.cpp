@@ -6,7 +6,8 @@
 
 namespace Sorting {
     HeapSort::HeapSort(int32_t *arr, size_t size) {
-        this->arr = arr;
+        this->arr = new int32_t[size];
+        std::copy(arr, arr + size - 1, this->arr);
         this->size = size;
     }
 

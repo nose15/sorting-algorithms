@@ -6,6 +6,7 @@
 #define AIZO_1_HEAPSORT_HPP
 
 #include <cstring>
+#include <vector>
 #include <SortingAlgorithm.hpp>
 
 namespace Sorting {
