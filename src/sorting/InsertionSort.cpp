@@ -2,8 +2,7 @@
 // Created by lukasz on 10.03.25.
 //
 
-#include <cstring>
-#include "InsertionSort.hpp"
+#include <InsertionSort.hpp>
 
 namespace Sorting {
     InsertionSort::InsertionSort(int32_t *arr, size_t size) {

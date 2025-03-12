@@ -5,7 +5,8 @@
 #ifndef AIZO_1_HEAPSORT_HPP
 #define AIZO_1_HEAPSORT_HPP
 
-#include "../sorting_algorithm/SortingAlgorithm.hpp"
+#include <cstring>
+#include <SortingAlgorithm.hpp>
 
 namespace Sorting {
 

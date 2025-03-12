@@ -5,7 +5,7 @@
 #ifndef AIZO_1_QUICKSORT_HPP
 #define AIZO_1_QUICKSORT_HPP
 
-#include "../sorting_algorithm/SortingAlgorithm.hpp"
+#include <SortingAlgorithm.hpp>
 
 namespace Sorting {
 

@@ -8,8 +8,9 @@
 #include <cstdint>
 #include <cstddef>
 #include <thread>
-#include "../spinning_lock/SpinningLock.hpp"
-#include "../linked_list/LinkedList.hpp"
+#include <SpinningLock.hpp>
+#include <LinkedList.hpp>
+
 
 namespace MultiThreading {
 

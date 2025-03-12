@@ -1,7 +1,6 @@
 #include <iostream>
-#include "multithreading/linked_list/LinkedList.hpp"
-#include "multithreading/blocking_queue/BlockingQueue.hpp"
-#include "sorting/sorting_algorithm/SortingAlgorithm.hpp"
+#include <BlockingQueue.hpp>
+#include <SortingAlgorithm.hpp>
 
 void testAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm>> algorithmQueue);
 void createAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm>> algorithmQueue);

@@ -5,7 +5,8 @@
 #ifndef AIZO_1_INSERTIONSORT_HPP
 #define AIZO_1_INSERTIONSORT_HPP
 
-#include "../sorting_algorithm/SortingAlgorithm.hpp"
+#include <cstring>
+#include <SortingAlgorithm.hpp>
 
 namespace Sorting {
 
@@ -13,7 +14,7 @@ namespace Sorting {
     public:
         InsertionSort(int32_t* arr, size_t size);
         int32_t* sort() override;
-        ~InsertionSort() = default;
+        ~InsertionSort() override = default;
     };
 
 } // Sorting

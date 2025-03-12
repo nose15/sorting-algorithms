@@ -1,7 +1,7 @@
 //
 // Created by lukasz on 10.03.25.
 //
-#include "SortingAlgorithm.hpp"
+#include <SortingAlgorithm.hpp>
 
 namespace Sorting {
     void SortingAlgorithm::setArray(int32_t* arr, size_t size) {

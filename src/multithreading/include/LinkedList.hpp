@@ -2,7 +2,7 @@
 #define AIZO_1_LINKEDLIST_HPP
 
 #include <cstddef>
-#include "Node.hpp"
+#include <Node.hpp>
 
 namespace MultiThreading {
 

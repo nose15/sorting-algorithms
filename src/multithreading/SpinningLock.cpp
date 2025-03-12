@@ -3,7 +3,7 @@
 //
 
 #include <thread>
-#include "SpinningLock.hpp"
+#include <SpinningLock.hpp>
 
 namespace MultiThreading {
     void SpinningLock::lock() {

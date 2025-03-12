@@ -2,8 +2,7 @@
 // Created by lukasz on 10.03.25.
 //
 
-#include <cstring>
-#include "HeapSort.hpp"
+#include <HeapSort.hpp>
 
 namespace Sorting {
     HeapSort::HeapSort(int32_t *arr, size_t size) {
