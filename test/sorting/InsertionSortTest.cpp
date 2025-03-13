@@ -1,19 +1,22 @@
 //
+// Created by lukasz on 13.03.25.
+//
+//
 // Created by lukasz on 12.03.25.
 //
 #include <random>
 #include <gtest/gtest.h>
-#include <HeapSort.hpp>
+#include <InsertionSort.hpp>
 
-class HeapSortTest : public testing::TestWithParam<std::vector<int32_t>> {};
+class InsertionSortTest : public testing::TestWithParam<std::vector<int32_t>> {};
 
-TEST_P(HeapSortTest, TestAlgorithmCorrect) {
+TEST_P(InsertionSortTest, TestAlgorithmCorrect) {
     std::vector<int32_t> nums = GetParam();
     int32_t * arr = nums.begin().base();
     size_t size = nums.size();
 
-    Sorting::HeapSort heapSort(arr, size);
-    int32_t* res = heapSort.sort();
+    Sorting::InsertionSort insertionSort(arr, size);
+    int32_t* res = insertionSort.sort();
 
     bool sorted = true;
     for (int i = 0; i < size - 1; i++) {
@@ -28,7 +31,7 @@ TEST_P(HeapSortTest, TestAlgorithmCorrect) {
 
 INSTANTIATE_TEST_SUITE_P(
         SortingTests,
-        HeapSortTest,
+        InsertionSortTest,
         ::testing::Values(
                 std::vector<int32_t>{1, 2, 3, 4, 5},
                 std::vector<int32_t>{5, 4, 3, 2, 1},
