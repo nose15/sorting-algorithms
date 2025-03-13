@@ -3,13 +3,9 @@
 //
 
 #include <ShellSort.hpp>
+#include <algorithm>
 
 namespace Sorting {
-    ShellSort::ShellSort(int32_t *arr, size_t size) {
-        this->arr = arr;
-        this->size = size;
-    }
-
     int32_t* ShellSort::sort() {
         // TODO: Implement Shell sort
 

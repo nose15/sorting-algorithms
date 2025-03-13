@@ -12,9 +12,8 @@ namespace Sorting {
 
     class ShellSort : public SortingAlgorithm {
     public:
-        ShellSort(int32_t* arr, size_t size);
         int32_t* sort() override;
-        ~ShellSort() = default;
+        ~ShellSort() override = default;
     };
 
 } // Sorting

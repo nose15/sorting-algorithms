@@ -12,8 +12,7 @@ namespace Sorting {
 
     class InsertionSort : public SortingAlgorithm {
     public:
-        InsertionSort() = default;
-        InsertionSort(int32_t* arr, size_t size);
+        using SortingAlgorithm::SortingAlgorithm;
         int32_t* sort() override;
         ~InsertionSort() override = default;
     };

@@ -11,9 +11,9 @@ namespace Sorting {
 
     class QuickSort : public SortingAlgorithm {
     public:
-        QuickSort(int32_t* arr, size_t size);
+        using SortingAlgorithm::SortingAlgorithm;
         int32_t* sort() override;
-        ~QuickSort() = default;
+        ~QuickSort() override = default;
     };
 
 } // Sorting

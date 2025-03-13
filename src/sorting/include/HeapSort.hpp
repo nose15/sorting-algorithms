@@ -13,8 +13,6 @@ namespace Sorting {
 
     class HeapSort : public SortingAlgorithm {
     public:
-        HeapSort() = default;
-        HeapSort(int32_t* arr, size_t size);
         int32_t* sort() override;
         ~HeapSort() override = default;
     };

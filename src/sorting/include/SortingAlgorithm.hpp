@@ -15,6 +15,7 @@ namespace Sorting {
         size_t size;
     public:
         SortingAlgorithm();
+        SortingAlgorithm(int32_t * arr, size_t size);
         void setArray(int32_t * arr, size_t size);
         virtual int32_t* sort() = 0;
         virtual ~SortingAlgorithm();
