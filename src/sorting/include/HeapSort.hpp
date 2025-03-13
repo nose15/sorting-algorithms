@@ -13,6 +13,7 @@ namespace Sorting {
 
     class HeapSort : public SortingAlgorithm {
     public:
+        using SortingAlgorithm::SortingAlgorithm;
         int32_t* sort() override;
         ~HeapSort() override = default;
     };
