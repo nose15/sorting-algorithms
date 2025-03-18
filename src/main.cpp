@@ -2,13 +2,13 @@
 #include <BlockingQueue.hpp>
 #include <SortingAlgorithm.hpp>
 
-void testAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm>> algorithmQueue);
-void createAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm>> algorithmQueue);
+void testAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm<int32_t>>> algorithmQueue);
+void createAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm<int32_t>>> algorithmQueue);
 
 
 int main() {
     auto threads = std::make_unique<MultiThreading::LinkedList<std::thread>>();
-    auto algorithms = std::make_shared<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm>>();
+    auto algorithms = std::make_shared<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm<int32_t>>>();
     createAlgorithms(algorithms);
     const uint32_t processorCount = std::thread::hardware_concurrency();
 
@@ -25,10 +25,10 @@ int main() {
     }
 }
 
-void testAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm>> algorithmQueue) {
+void testAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm<int32_t>>> algorithmQueue) {
 
 }
 
-void createAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm>> algorithmQueue) {
+void createAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::SortingAlgorithm<int32_t>>> algorithmQueue) {
 
 }

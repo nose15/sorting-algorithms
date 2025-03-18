@@ -12,7 +12,7 @@ TEST_P(HeapSortTest, TestAlgorithmCorrect) {
     int32_t * arr = nums.begin().base();
     size_t size = nums.size();
 
-    Sorting::HeapSort heapSort(arr, size);
+    Sorting::HeapSort<int32_t> heapSort(arr, size);
     int32_t* res = heapSort.sort();
 
     bool sorted = true;

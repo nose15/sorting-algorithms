@@ -1,9 +1,3 @@
-add_library(sorting
-        HeapSort.cpp
-        InsertionSort.cpp
-        QuickSort.cpp
-        ShellSort.cpp
-        SortingAlgorithm.cpp
-)
+add_library(sorting INTERFACE)
 
-target_include_directories(sorting PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(sorting INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)

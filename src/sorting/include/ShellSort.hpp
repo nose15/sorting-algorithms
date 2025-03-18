@@ -9,10 +9,12 @@
 #include <SortingAlgorithm.hpp>
 
 namespace Sorting {
-
-    class ShellSort : public SortingAlgorithm {
+    template <typename T>
+    class ShellSort : public SortingAlgorithm<T> {
     public:
-        int32_t* sort() override;
+        T* sort() override {
+
+        }
         ~ShellSort() override = default;
     };
 

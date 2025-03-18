@@ -9,11 +9,37 @@
 #include <SortingAlgorithm.hpp>
 
 namespace Sorting {
+    template <typename T>
+    class InsertionSort : public SortingAlgorithm<T> {
+    private:
+        void shiftRight(uint16_t start, uint16_t end) {
+            if (end < start) {
+                return;
+            }
 
-    class InsertionSort : public SortingAlgorithm {
+            for (int i = end; i > start; i--) {
+                this->arr[i] = this->arr[i - 1];
+            }
+        }
+
     public:
-        using SortingAlgorithm::SortingAlgorithm;
-        int32_t* sort() override;
+        using SortingAlgorithm<T>::SortingAlgorithm;
+
+        T* sort() override {
+            for (int i = 1; i < this->size; i++) {
+                int j = i - 1;
+                while (j > 0 && this->arr[j - 1] > this->arr[i]) j--;
+
+                if (this->arr[j] > this->arr[i]) {
+                    T val = this->arr[i];
+                    shiftRight(j, i);
+                    this->arr[j] = val;
+                }
+            }
+
+            return this->arr;
+        }
+
         ~InsertionSort() override = default;
     };
 

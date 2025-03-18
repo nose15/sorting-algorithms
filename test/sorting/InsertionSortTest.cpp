@@ -15,12 +15,12 @@ TEST_P(InsertionSortTest, TestAlgorithmCorrect) {
     int32_t * arr = nums.begin().base();
     size_t size = nums.size();
 
-    Sorting::InsertionSort insertionSort(arr, size);
+    Sorting::InsertionSort<int32_t> insertionSort(arr, size);
     int32_t* res = insertionSort.sort();
 
     bool sorted = true;
     for (int i = 0; i < size - 1; i++) {
-        if (res[i+1] <= res[i]) {
+        if (res[i+1] < res[i]) {
             sorted = false;
             break;
         }
@@ -28,6 +28,7 @@ TEST_P(InsertionSortTest, TestAlgorithmCorrect) {
 
     ASSERT_EQ(sorted, true);
 }
+
 
 INSTANTIATE_TEST_SUITE_P(
         SortingTests,

@@ -8,11 +8,13 @@
 #include <SortingAlgorithm.hpp>
 
 namespace Sorting {
-
-    class QuickSort : public SortingAlgorithm {
+    template <typename T>
+    class QuickSort : public SortingAlgorithm<T> {
     public:
-        using SortingAlgorithm::SortingAlgorithm;
-        int32_t* sort() override;
+        using SortingAlgorithm<T>::SortingAlgorithm;
+        T* sort() override {
+
+        }
         ~QuickSort() override = default;
     };
 

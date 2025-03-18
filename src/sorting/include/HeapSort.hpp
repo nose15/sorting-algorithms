@@ -10,11 +10,13 @@
 #include <SortingAlgorithm.hpp>
 
 namespace Sorting {
-
-    class HeapSort : public SortingAlgorithm {
+    template <typename T>
+    class HeapSort : public SortingAlgorithm<T> {
     public:
-        using SortingAlgorithm::SortingAlgorithm;
-        int32_t* sort() override;
+        using SortingAlgorithm<T>::SortingAlgorithm;
+        T* sort() override {
+
+        }
         ~HeapSort() override = default;
     };
 
