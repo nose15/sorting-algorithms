@@ -14,12 +14,13 @@ namespace Sorting {
     class HeapSort : public SortingAlgorithm<T> {
     public:
         using SortingAlgorithm<T>::SortingAlgorithm;
-        T* sort() override {
 
+        T* sort() override {
+            
         }
+
         ~HeapSort() override = default;
     };
-
 } // Sorting
 
 #endif //AIZO_1_HEAPSORT_HPP

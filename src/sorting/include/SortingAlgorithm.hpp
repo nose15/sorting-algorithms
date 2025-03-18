@@ -8,11 +8,12 @@
 #include <cstddef>
 #include <cstdint>
 #include <algorithm>
+#include <AlgorithmBenchmark.hpp>
 
 namespace Sorting {
 
     template <typename T>
-    class SortingAlgorithm {
+    class SortingAlgorithm : public AlgorithmBenchmark {
     protected:
         T * arr;
         size_t size;
@@ -27,14 +28,19 @@ namespace Sorting {
             std::copy(arr, arr + size, this->arr);
             this->size = size;
         }
-        void setArray(T * arr, size_t size) {
-            this->arr = new T[size];
-            std::copy(arr, arr + size, this->arr);
-            this->size = size;
-        }
-        virtual T* sort() = 0;
-        virtual ~SortingAlgorithm() {
+
+        ~SortingAlgorithm() override {
             delete this->arr;
+        }
+
+        virtual T* sort() = 0;
+
+        void run() override {
+            // get time before
+            T* sorted = sort();
+            // get time after, get total time
+
+            // if properly sorted - save to file
         }
     };
 } // Sorting

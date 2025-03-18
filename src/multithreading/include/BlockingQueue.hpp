@@ -22,9 +22,15 @@ namespace MultiThreading {
     public:
         BlockingQueue();
         void push(T* arg);
+        size_t size();
         std::unique_ptr<T> pop();
         ~BlockingQueue();
     };
+
+    template<typename T>
+    size_t BlockingQueue<T>::size() {
+        return linkedList->getSize();
+    }
 
     template<typename T>
     BlockingQueue<T>::BlockingQueue() {
@@ -42,7 +48,9 @@ namespace MultiThreading {
     std::unique_ptr<T> BlockingQueue<T>::pop() {
         std::unique_ptr<T> ptr;
 
-        while (true) {
+        auto start = std::chrono::system_clock::now();
+        auto elapsedSeconds = std::chrono::system_clock::now() - start;
+        while (elapsedSeconds.count() < 1) {
             spinningLock->lock();
 
             if (linkedList->getSize() > 0) {
@@ -52,6 +60,7 @@ namespace MultiThreading {
             }
 
             spinningLock->unlock();
+            elapsedSeconds = std::chrono::system_clock::now() - start;
             std::this_thread::yield();
         }
 
