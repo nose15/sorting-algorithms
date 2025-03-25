@@ -3,11 +3,20 @@
 #include <SortingAlgorithm.hpp>
 #include <filesystem>
 #include <fstream>
-#include "HeapSort.hpp"
+#include <InsertionSort.hpp>
+#include <HeapSort.hpp>
+#include <QuickSort.hpp>
+#include <ShellSort.hpp>
 
 void algorithmBenchmark(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>> algorithmQueue);
 void createAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>> algorithmQueue);
-std::unique_ptr<Sorting::AlgorithmBenchmark> createIntAlgorithm(const std::filesystem::directory_entry & f);
+
+template <typename T>
+void createBenchmarksFromFile(const std::filesystem::directory_entry & f, std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>> algorithmQueue);
+
+template <typename T>
+size_t readIntArr(const std::filesystem::directory_entry & f, std::shared_ptr<T[]>& ref);
+
 std::unique_ptr<Sorting::AlgorithmBenchmark> createFloatAlgorithm(const std::filesystem::directory_entry & f);
 
 int main() {
@@ -51,23 +60,32 @@ void createAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::Alg
         uint16_t first_ = path.find('_');
         std::string datatype = path.substr(first_ + 1, 3);
 
-        std::cout << datatype << std::endl;
         if (datatype == "int") {
-            auto alg = createIntAlgorithm(f);
-            algorithmQueue->push(std::move(alg));
+            createBenchmarksFromFile<int32_t>(f, algorithmQueue);
         }
         else if (datatype == "flo") {
-            continue;
-            algorithmQueue->push(createFloatAlgorithm(f));
+            createBenchmarksFromFile<double>(f, algorithmQueue);
         }
     }
 }
 
-std::unique_ptr<Sorting::AlgorithmBenchmark> createIntAlgorithm(const std::filesystem::directory_entry & f) {
+template <typename T>
+void createBenchmarksFromFile(const std::filesystem::directory_entry & f, std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>> algorithmQueue) {
+    std::shared_ptr<T[]> arr;
+    size_t len = readIntArr(f, arr);
+
+    algorithmQueue->push(std::make_unique<Sorting::HeapSort<T>>(arr.get(), len));
+    algorithmQueue->push(std::make_unique<Sorting::InsertionSort<T>>(arr.get(), len));
+    algorithmQueue->push(std::make_unique<Sorting::QuickSort<T>>(arr.get(), len));
+    algorithmQueue->push(std::make_unique<Sorting::ShellSort<T>>(arr.get(), len));
+}
+
+template <typename T>
+size_t readIntArr(const std::filesystem::directory_entry & f, std::shared_ptr<T[]>& ref) {
     std::fstream file;
     file.open(f.path());
 
-    int32_t len;
+    size_t len;
     std::string line;
     if (getline(file, line)) {
         len = std::stoi(line);
@@ -75,21 +93,18 @@ std::unique_ptr<Sorting::AlgorithmBenchmark> createIntAlgorithm(const std::files
        throw std::length_error("File is empty");
     }
 
-    auto * arr = new int32_t[len];
+    ref = std::shared_ptr<T[]>(new T[len]);
     for (int i = 0; i < len; i++) {
        if (!getline(file, line)) {
            throw std::range_error("wrong file format");
        }
 
-       arr[i] = std::stoi(line);
-       std::cout << arr[i] << " ";
+       if (typeid(T) == typeid(int)) {
+            ref[i] = std::stoi(line);
+       } else if (typeid(T) == typeid(double)) {
+            ref[i] = std::stod(line);
+       }
     }
 
-    std::cout << std::endl;
-
-    return std::make_unique<Sorting::HeapSort<int32_t>>(arr, len);
-}
-
-std::unique_ptr<Sorting::AlgorithmBenchmark> createFloatAlgorithm(const std::filesystem::directory_entry & f) {
-
+    return len;
 }

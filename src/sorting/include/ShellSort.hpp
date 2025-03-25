@@ -12,6 +12,7 @@ namespace Sorting {
     template <typename T>
     class ShellSort : public SortingAlgorithm<T> {
     public:
+        using SortingAlgorithm<T>::SortingAlgorithm;
         T* sort() override {
 
         }
