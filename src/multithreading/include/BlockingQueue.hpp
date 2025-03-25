@@ -21,7 +21,7 @@ namespace MultiThreading {
         SpinningLock* spinningLock;
     public:
         BlockingQueue();
-        void push(T* arg);
+        void push(std::unique_ptr<T> arg);
         size_t size();
         std::unique_ptr<T> pop();
         ~BlockingQueue();
@@ -46,11 +46,11 @@ namespace MultiThreading {
 
     template<typename T>
     std::unique_ptr<T> BlockingQueue<T>::pop() {
-        std::unique_ptr<T> ptr;
+        std::unique_ptr<T> ptr = nullptr;
 
         auto start = std::chrono::system_clock::now();
-        auto elapsedSeconds = std::chrono::system_clock::now() - start;
-        while (elapsedSeconds.count() < 1) {
+        auto elapsed = std::chrono::system_clock::now() - start;
+        while (elapsed.count() < 100000) {
             spinningLock->lock();
 
             if (linkedList->getSize() > 0) {
@@ -60,7 +60,7 @@ namespace MultiThreading {
             }
 
             spinningLock->unlock();
-            elapsedSeconds = std::chrono::system_clock::now() - start;
+            elapsed = std::chrono::system_clock::now() - start;
             std::this_thread::yield();
         }
 
@@ -68,10 +68,9 @@ namespace MultiThreading {
     }
 
     template<typename T>
-    void BlockingQueue<T>::push(T* arg) {
-        spinningLock->lock();
-        std::unique_ptr<T> ptr(arg);
-        linkedList->push_front(std::move(ptr));
+    void BlockingQueue<T>::push(std::unique_ptr<T> arg) {
+        this->spinningLock->lock();
+        linkedList->push_front(std::move(arg));
         spinningLock->unlock();
     }
 } // MultiThreading
