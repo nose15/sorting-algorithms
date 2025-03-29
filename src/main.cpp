@@ -27,29 +27,24 @@ int main(int argc, char** argv) {
     readCLIArgs(argc, argv, flags);
     std::ifstream resFile;
 
-    if (flags.find("result") != flags.end()) {
-        std::string fileName = flags["result"];
-        if (fileName.empty()) {
-            std::cout << "ERROR: No file name specified" << std::endl;
-            return 1;
+    try {
+        if (flags.find("result") != flags.end()) {
+            std::string fileName = flags["result"];
+            if (fileName.empty()) throw std::invalid_argument("No file name specified");
+
+            resFile = std::ifstream(fileName.c_str());
+            if (!resFile.good()) throw std::invalid_argument("Wrong file name specified");
         }
 
-        resFile = std::ifstream(fileName.c_str());
-        if (!resFile.good()) {
-            std::cout << "ERROR: Wrong file name specified" << std::endl;
-            return 1;
+        if (flags.find("auto") != flags.end()) {
+            std::cout << "Running automatic benchmark..." << std::endl;
+            concurrentRun();
+        } else if (flags.find("file") != flags.end()) {
+            std::string param = flags["file"];
+            if (param.empty()) throw std::invalid_argument("No file name specified");
         }
-    }
-
-    if (flags.find("auto") != flags.end()) {
-        std::cout << "Running automatic benchmark..." << std::endl;
-        concurrentRun();
-    } else if (flags.find("file") != flags.end()) {
-        std::string param = flags["file"];
-        if (param.empty()) {
-            std::cout << "ERROR: No file name specified" << std::endl;
-            return 1;
-        }
+    } catch (std::logic_error& e) {
+        std::cout << "ERROR: " << e.what() << std::endl;
     }
 }
 
