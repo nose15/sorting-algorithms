@@ -7,6 +7,7 @@
 #include <HeapSort.hpp>
 #include <QuickSort.hpp>
 #include <ShellSort.hpp>
+#include <set>
 
 void algorithmBenchmark(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>> algorithmQueue);
 void createAlgorithms(std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>> algorithmQueue);
@@ -18,8 +19,58 @@ template <typename T>
 size_t readIntArr(const std::filesystem::directory_entry & f, std::shared_ptr<T[]>& ref);
 
 std::unique_ptr<Sorting::AlgorithmBenchmark> createFloatAlgorithm(const std::filesystem::directory_entry & f);
+void concurrentRun();
+void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::string>& flags);
 
-int main() {
+int main(int argc, char** argv) {
+    std::unordered_map<std::string, std::string> flags;
+    readCLIArgs(argc, argv, flags);
+    std::ifstream resFile;
+
+    if (flags.find("result") != flags.end()) {
+        std::string fileName = flags["result"];
+        if (fileName.empty()) {
+            std::cout << "ERROR: No file name specified" << std::endl;
+            return 1;
+        }
+
+        resFile = std::ifstream(fileName.c_str());
+        if (!resFile.good()) {
+            std::cout << "ERROR: Wrong file name specified" << std::endl;
+            return 1;
+        }
+    }
+
+    if (flags.find("auto") != flags.end()) {
+        std::cout << "Running automatic benchmark..." << std::endl;
+        concurrentRun();
+    } else if (flags.find("file") != flags.end()) {
+        std::string param = flags["file"];
+        if (param.empty()) {
+            std::cout << "ERROR: No file name specified" << std::endl;
+            return 1;
+        }
+    }
+}
+
+void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::string>& flags) {
+    for (int i = 1; i < argc; i++) {
+        std::string arg = argv[i];
+
+        if (i + 1 < argc && arg.size() > 2 && arg.substr(0, 2) == "--") {
+            std::string param(argv[i + 1]);
+
+            if (param.size() > 2 && param.substr(0, 2) != "--") {
+                flags.emplace(arg.substr(2), param);
+                i++;
+            }
+        }
+
+        flags.emplace(arg.substr(2), "");
+    }
+}
+
+void concurrentRun() {
     const uint32_t processorCount = std::thread::hardware_concurrency();
 
     auto threads = std::make_unique<MultiThreading::LinkedList<std::thread>>();
