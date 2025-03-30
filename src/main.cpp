@@ -73,6 +73,7 @@ int main(int argc, char** argv) {
     runDialog();
 }
 
+// measuring
 void singleRun(const std::string& fileName, const std::filesystem::path& resultPath, std::unordered_map<std::string, std::string>& flags) {
     std::filesystem::path file(fileName.c_str());
     if (!std::filesystem::exists(file)) throw std::invalid_argument("Wrong file name specified");
@@ -85,6 +86,7 @@ void singleRun(const std::string& fileName, const std::filesystem::path& resultP
     std::cout << "Finished running " << std::endl;
 }
 
+// CLI method
 void runDialog() {
     size_t len;
     std::cout << "Array Length: ";
@@ -128,6 +130,7 @@ void runDialog() {
     }
 }
 
+// util
 template <typename T>
 std::unique_ptr<T[]> generateArr(size_t len, int32_t conf) {
     std::unique_ptr<T[]> arr = std::make_unique<T[]>(len);
@@ -157,6 +160,7 @@ std::unique_ptr<T[]> generateArr(size_t len, int32_t conf) {
     return std::move(arr);
 }
 
+// Benchmark factory
 template <typename T>
 std::unique_ptr<Sorting::AlgorithmBenchmark> createBenchmark(Algorithm algorithm, std::unique_ptr<T[]> arr, size_t len) {
     std::unique_ptr<Sorting::AlgorithmBenchmark> algoBenchmark;
@@ -182,7 +186,7 @@ std::unique_ptr<Sorting::AlgorithmBenchmark> createBenchmark(Algorithm algorithm
     return std::move(algoBenchmark);
 }
 
-
+// Benchmark factory
 std::unique_ptr<Sorting::AlgorithmBenchmark> createBenchmarkFromFile(const std::filesystem::path& file, std::unordered_map<std::string, std::string>& flags) {
     std::unique_ptr<Sorting::AlgorithmBenchmark> algoBenchmark;
 
@@ -257,6 +261,7 @@ std::unique_ptr<Sorting::AlgorithmBenchmark> createBenchmarkFromFile(const std::
     return std::move(algoBenchmark);
 }
 
+// CLI method
 void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::string>& flags) {
     for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
@@ -274,6 +279,7 @@ void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::str
     }
 }
 
+// measuring
 void concurrentRun() {
     const uint32_t processorCount = std::thread::hardware_concurrency();
 
@@ -294,6 +300,7 @@ void concurrentRun() {
     }
 }
 
+// measuring
 void algorithmBenchmark(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue) {
     while (algorithmQueue->size() != 0) {
         auto algoBenchmark = algorithmQueue->pop();
@@ -307,6 +314,7 @@ void algorithmBenchmark(const std::shared_ptr<MultiThreading::BlockingQueue<Sort
     }
 }
 
+// util
 void createAlgorithms(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue) {
     auto it = std::filesystem::directory_iterator("data");
     for (const auto & f : it) {
@@ -324,6 +332,7 @@ void createAlgorithms(const std::shared_ptr<MultiThreading::BlockingQueue<Sortin
     }
 }
 
+// sorting specific util
 template <typename T>
 void createBenchmarksFromFile(const std::filesystem::directory_entry & f, const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue) {
     std::shared_ptr<T[]> arr;
@@ -335,6 +344,7 @@ void createBenchmarksFromFile(const std::filesystem::directory_entry & f, const 
     algorithmQueue->push(std::make_unique<Sorting::ShellSort<T>>(arr.get(), len));
 }
 
+// util
 template <typename T>
 size_t readArr(const std::filesystem::path & f, std::shared_ptr<T[]>& ref) {
     std::fstream file;
