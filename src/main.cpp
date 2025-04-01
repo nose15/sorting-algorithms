@@ -367,6 +367,7 @@ size_t readArr(const std::filesystem::path & f, std::shared_ptr<T[]>& ref) {
        if (typeid(T) == typeid(int)) {
             ref[i] = std::stoi(line);
        } else if (typeid(T) == typeid(double)) {
+            std::replace(line.begin(), line.end(), ',', '.');
             ref[i] = std::stod(line);
        }
     }
