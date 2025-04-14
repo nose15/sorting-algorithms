@@ -9,6 +9,7 @@
 #include <ShellSort.hpp>
 #include <set>
 #include <random>
+#include <FileUtils.hpp>
 
 enum Algorithm {
     INSERTION = 1,
@@ -58,7 +59,6 @@ int main(int argc, char** argv) {
         if (flags.find("auto") != flags.end()) {
             std::cout << "Running automatic benchmark..." << std::endl;
             concurrentRun();
-            std::cout << "Running automatic benchmark..." << std::endl;
             return 0;
         } else if (flags.find("file") != flags.end()) {
             std::string fileName = flags["file"];
@@ -299,6 +299,20 @@ void concurrentRun() {
         }
     }
 }
+
+// utils
+std::vector<uint8_t> getIsolatedCpus() {
+  std::ifstream file("/sys/devices/system/cpu/isolated");
+
+  if (file) {
+    std::string line;
+    std::getline(file, line);
+    return FileUtils::parseInts(line);
+  }
+
+  return {};
+}
+
 
 // measuring
 void algorithmBenchmark(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue) {
