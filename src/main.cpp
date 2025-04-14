@@ -1,36 +1,17 @@
 #include <iostream>
-#include <BlockingQueue.hpp>
-#include <SortingAlgorithm.hpp>
 #include <filesystem>
 #include <fstream>
-#include <InsertionSort.hpp>
-#include <HeapSort.hpp>
-#include <QuickSort.hpp>
-#include <ShellSort.hpp>
 #include <set>
 #include <random>
+#include <Sorting.hpp>
 #include <FileUtils.hpp>
 
-enum Algorithm {
-    INSERTION = 1,
-    HEAP = 2,
-    QUICK = 3,
-    SHELL = 4,
-};
-
-void algorithmBenchmark(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue);
-void createAlgorithms(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue);
-template <typename T>
-void createBenchmarksFromFile(const std::filesystem::directory_entry & f, const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue);
 
 void concurrentRun();
 void singleRun(const std::string& fileName, const std::filesystem::path& resultPath, std::unordered_map<std::string, std::string>& flags);
 void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::string>& flags);
-std::unique_ptr<Sorting::AlgorithmBenchmark> createBenchmarkFromFile(const std::filesystem::path& file, std::unordered_map<std::string, std::string>& flags);
 void runDialog();
-
-template <typename T>
-std::unique_ptr<Sorting::AlgorithmBenchmark> createBenchmark(Algorithm algorithm, std::unique_ptr<T[]> arr, size_t len);
+void algorithmBenchmark(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue);
 
 template <typename T>
 std::unique_ptr<T[]> generateArr(size_t len, int32_t conf);
@@ -75,7 +56,7 @@ void singleRun(const std::string& fileName, const std::filesystem::path& resultP
 
     if (!resultPath.empty() && !std::filesystem::is_regular_file(resultPath)) throw std::invalid_argument("Specified path to result is not a file");
 
-    auto algoBenchmark = createBenchmarkFromFile(file, flags);
+    auto algoBenchmark = Sorting::createBenchmarkFromFile(file, flags);
     std::cout << "Running algorithm " << std::endl;
     algoBenchmark->run();
     std::cout << "Finished running " << std::endl;
@@ -109,14 +90,14 @@ void runDialog() {
         case 1: {
             std::unique_ptr<int32_t[]> arr = generateArr<int32_t>(len, conf);
             std::unique_ptr<Sorting::AlgorithmBenchmark> algorithmBenchmark = createBenchmark<int32_t>(
-                    static_cast<Algorithm>(algorithm), std::move(arr), len);
+                    static_cast<Sorting::Algorithm>(algorithm), std::move(arr), len);
             algorithmBenchmark->run();
             break;
         }
         case 2: {
             std::unique_ptr<double[]> arr = generateArr<double>(len, conf);
             std::unique_ptr<Sorting::AlgorithmBenchmark> algorithmBenchmark = createBenchmark<double>(
-                    static_cast<Algorithm>(algorithm), std::move(arr), len);
+                    static_cast<Sorting::Algorithm>(algorithm), std::move(arr), len);
             algorithmBenchmark->run();
             break;
         }
@@ -155,107 +136,6 @@ std::unique_ptr<T[]> generateArr(size_t len, int32_t conf) {
     return std::move(arr);
 }
 
-// sorting util
-template <typename T>
-std::unique_ptr<Sorting::AlgorithmBenchmark> createBenchmark(Algorithm algorithm, std::unique_ptr<T[]> arr, size_t len) {
-    std::unique_ptr<Sorting::AlgorithmBenchmark> algoBenchmark;
-
-    switch (algorithm) {
-        case INSERTION:
-            algoBenchmark = std::make_unique<Sorting::InsertionSort<T>>(arr.get(), len);
-            break;
-
-        case HEAP:
-            algoBenchmark = std::make_unique<Sorting::HeapSort<T>>(arr.get(), len);
-            break;
-
-        case QUICK:
-            algoBenchmark = std::make_unique<Sorting::QuickSort<T>>(arr.get(), len);
-            break;
-
-        case SHELL:
-            algoBenchmark = std::make_unique<Sorting::ShellSort<T>>(arr.get(), len);
-            break;
-    }
-
-    return std::move(algoBenchmark);
-}
-
-// sorting util
-std::unique_ptr<Sorting::AlgorithmBenchmark> createBenchmarkFromFile(const std::filesystem::path& file, std::unordered_map<std::string, std::string>& flags) {
-    std::unique_ptr<Sorting::AlgorithmBenchmark> algoBenchmark;
-
-    Algorithm algorithm = INSERTION;
-    if (flags.find("algo") != flags.end()) {
-        if (flags["algo"] == "heap") algorithm = HEAP;
-        else if (flags["algo"] == "quick") algorithm = QUICK;
-        else if (flags["algo"] == "shell") algorithm = SHELL;
-        else std::cout << "No such algorithm - defaulting to Insertion...";
-    }
-
-    if (flags.find("type") != flags.end()) {
-        std::string type = flags["type"];
-
-        if (type == "int") {
-            std::shared_ptr<int32_t[]> arr;
-            size_t len = FileUtils::readArr<int32_t>(file, arr);
-
-            switch (algorithm) {
-                case HEAP:
-                    algoBenchmark = std::make_unique<Sorting::HeapSort<int32_t>>(arr.get(), len);
-                    break;
-                case INSERTION:
-                    algoBenchmark = std::make_unique<Sorting::InsertionSort<int32_t>>(arr.get(), len);
-                    break;
-                case QUICK:
-                    algoBenchmark = std::make_unique<Sorting::QuickSort<int32_t>>(arr.get(), len);
-                    break;
-                case SHELL:
-                    algoBenchmark = std::make_unique<Sorting::ShellSort<int32_t>>(arr.get(), len);
-                    break;
-            }
-        } else if (type == "double") {
-            std::shared_ptr<double[]> arr;
-            size_t len = FileUtils::readArr<double>(file, arr);
-
-            switch (algorithm) {
-                case HEAP:
-                    algoBenchmark = std::make_unique<Sorting::HeapSort<double>>(arr.get(), len);
-                    break;
-                case INSERTION:
-                    algoBenchmark = std::make_unique<Sorting::InsertionSort<double>>(arr.get(), len);
-                    break;
-                case QUICK:
-                    algoBenchmark = std::make_unique<Sorting::QuickSort<double>>(arr.get(), len);
-                    break;
-                case SHELL:
-                    algoBenchmark = std::make_unique<Sorting::ShellSort<double>>(arr.get(), len);
-                    break;
-            }
-        }
-    } else {
-        std::shared_ptr<int32_t[]> arr;
-        size_t len = FileUtils::readArr<int32_t>(file, arr);
-
-        switch (algorithm) {
-            case HEAP:
-                algoBenchmark = std::make_unique<Sorting::HeapSort<int32_t>>(arr.get(), len);
-                break;
-            case INSERTION:
-                algoBenchmark = std::make_unique<Sorting::InsertionSort<int32_t>>(arr.get(), len);
-                break;
-            case QUICK:
-                algoBenchmark = std::make_unique<Sorting::QuickSort<int32_t>>(arr.get(), len);
-                break;
-            case SHELL:
-                algoBenchmark = std::make_unique<Sorting::ShellSort<int32_t>>(arr.get(), len);
-                break;
-        }
-    }
-
-    return std::move(algoBenchmark);
-}
-
 // CLI method
 void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::string>& flags) {
     for (int i = 1; i < argc; i++) {
@@ -281,7 +161,7 @@ void concurrentRun() {
     auto threads = std::make_unique<MultiThreading::LinkedList<std::thread>>();
     auto algorithms = std::make_shared<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>();
 
-    createAlgorithms(algorithms);
+    Sorting::createAlgorithms(algorithms);
 
     for (uint32_t i = 0; i < processorCount; i++) {
         threads->push_front(std::make_unique<std::thread>(algorithmBenchmark, algorithms));
@@ -309,32 +189,5 @@ void algorithmBenchmark(const std::shared_ptr<MultiThreading::BlockingQueue<Sort
     }
 }
 
-// sorting util
-void createAlgorithms(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue) {
-    auto it = std::filesystem::directory_iterator("data");
-    for (const auto & f : it) {
-        if (!f.is_regular_file()) break;
-        std::string path = f.path().string();
-        uint16_t first_ = path.find('_');
-        std::string datatype = path.substr(first_ + 1, 3);
 
-        if (datatype == "int") {
-            createBenchmarksFromFile<int32_t>(f, algorithmQueue);
-        }
-        else if (datatype == "flo") {
-            createBenchmarksFromFile<double>(f, algorithmQueue);
-        }
-    }
-}
 
-// sorting util
-template <typename T>
-void createBenchmarksFromFile(const std::filesystem::directory_entry & f, const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue) {
-    std::shared_ptr<T[]> arr;
-    size_t len = readArr(f.path(), arr);
-
-    algorithmQueue->push(std::make_unique<Sorting::HeapSort<T>>(arr.get(), len));
-    algorithmQueue->push(std::make_unique<Sorting::InsertionSort<T>>(arr.get(), len));
-    algorithmQueue->push(std::make_unique<Sorting::QuickSort<T>>(arr.get(), len));
-    algorithmQueue->push(std::make_unique<Sorting::ShellSort<T>>(arr.get(), len));
-}

@@ -8,7 +8,12 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <BlockingQueue.hpp>
+#include <LinkedList.hpp>
+#include <SpinningLock.hpp>
 
-std::vector<uint8_t> getIsolatedCpus();
+namespace Multithreading {
+  std::vector<uint8_t> getIsolatedCpus();
+}
 
 #endif //AIZO_1_SRC_UTILS_INCLUDE_MULTITHREADINGUTILS_HPP_
