@@ -6,7 +6,7 @@
 
 namespace Sorting {
   void createAlgorithms(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue) {
-    auto it = std::filesystem::directory_iterator("data");
+    auto it = std::filesystem::directory_iterator("../data");
     for (const auto & f : it) {
       if (!f.is_regular_file()) break;
       std::string path = f.path().string();

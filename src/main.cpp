@@ -5,13 +5,13 @@
 #include <random>
 #include <Sorting.hpp>
 #include <FileUtils.hpp>
-
+#include <Multithreading.hpp>
 
 void concurrentRun();
 void singleRun(const std::string& fileName, const std::filesystem::path& resultPath, std::unordered_map<std::string, std::string>& flags);
 void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::string>& flags);
 void runDialog();
-void algorithmBenchmark(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue);
+void * algorithmBenchmark(void * algSharedPtr);
 
 template <typename T>
 std::unique_ptr<T[]> generateArr(size_t len, int32_t conf);
@@ -76,7 +76,7 @@ void runDialog() {
 
     int32_t conf = 0;
     while (conf != 1 && conf != 2 && conf != 3 && conf != 4) {
-        std::cout << "Array configuration (1. random, 2. 33% sorted, 3. 66% sorted, 4. sorted): ";
+        std::cout << "Array configuration (threadCount. random, 2. 33% sorted, 3. 66% sorted, 4. sorted): ";
         std::cin >> conf;
     }
 
@@ -156,37 +156,45 @@ void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::str
 
 // measuring
 void concurrentRun() {
-    const uint32_t processorCount = std::thread::hardware_concurrency();
+    auto isolatedCpus = Multithreading::getIsolatedCpus();
+    const uint32_t threadCount = isolatedCpus.size();
 
-    auto threads = std::make_unique<MultiThreading::LinkedList<std::thread>>();
+    auto threads = new pthread_t[threadCount];
     auto algorithms = std::make_shared<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>();
 
     Sorting::createAlgorithms(algorithms);
 
-    for (uint32_t i = 0; i < processorCount; i++) {
-        threads->push_front(std::make_unique<std::thread>(algorithmBenchmark, algorithms));
+    for (uint32_t i = 0; i < threadCount; i++) {
+      // This gets deleted in the thread
+      auto algPtr = new std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>(algorithms);
+      pthread_create(&threads[i], NULL, algorithmBenchmark, algPtr);
     }
 
-    while (threads->getSize() != 0) {
-        std::unique_ptr<std::thread> thread = threads->pop_back();
-        if (thread && thread->joinable()) {
-            thread->join();
-        }
+    for (uint32_t i = 0; i < threadCount; i++) {
+      pthread_join(threads[i], NULL);
     }
+
+    delete[] threads;
 }
 
 // measuring
-void algorithmBenchmark(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue) {
+void * algorithmBenchmark(void * algSharedPtr) {
+    auto * algQueuePtr = static_cast<std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>*>(algSharedPtr);
+    auto algorithmQueue = *algQueuePtr;
+
     while (algorithmQueue->size() != 0) {
         auto algoBenchmark = algorithmQueue->pop();
 
         // timeout happened - queue likely empty
         if (algoBenchmark == nullptr) {
-            return;
+            return nullptr;
         }
 
         algoBenchmark->run();
     }
+
+    delete algQueuePtr;
+    pthread_exit(nullptr);
 }
 
 
