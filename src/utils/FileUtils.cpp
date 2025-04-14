@@ -5,10 +5,10 @@
 #include <FileUtils.hpp>
 
 namespace FileUtils {
-  std::vector<uint8_t> parseInts(const std::string& line) {
+  std::vector<uint32_t> parseInts(const std::string& line) {
     auto nums = splitString(line, ',');
 
-    std::vector<uint8_t> res;
+    std::vector<uint32_t> res;
 
     for (const auto & num : *nums) {
       if (num.find_first_of('-') == std::string::npos) {

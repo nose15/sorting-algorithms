@@ -13,7 +13,7 @@
 #include <SpinningLock.hpp>
 
 namespace Multithreading {
-  std::vector<uint8_t> getIsolatedCpus();
+  std::vector<uint32_t> getIsolatedCpus();
 }
 
 #endif //AIZO_1_SRC_UTILS_INCLUDE_MULTITHREADINGUTILS_HPP_

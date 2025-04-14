@@ -7,7 +7,7 @@
 
 // utils
 namespace Multithreading {
-  std::vector<uint8_t> getIsolatedCpus() {
+  std::vector<uint32_t> getIsolatedCpus() {
     std::ifstream file("/sys/devices/system/cpu/isolated");
 
     if (file) {

@@ -15,7 +15,7 @@
 #include <algorithm>
 
 namespace FileUtils {
-std::vector<uint8_t> parseInts(const std::string &line);
+std::vector<uint32_t> parseInts(const std::string &line);
 std::unique_ptr<std::vector<std::string>> splitString(const std::string &str, char splitter);
 
 // file utils

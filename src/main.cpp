@@ -1,6 +1,5 @@
 #include <iostream>
 #include <filesystem>
-#include <fstream>
 #include <set>
 #include <random>
 #include <Sorting.hpp>
@@ -12,6 +11,11 @@ void singleRun(const std::string& fileName, const std::filesystem::path& resultP
 void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::string>& flags);
 void runDialog();
 void * algorithmBenchmark(void * algSharedPtr);
+
+struct BenchmarkArgs {
+  uint32_t core_number;
+  std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>> algorithmQueue;
+};
 
 template <typename T>
 std::unique_ptr<T[]> generateArr(size_t len, int32_t conf);
@@ -163,27 +167,39 @@ void concurrentRun() {
     auto algorithms = std::make_shared<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>();
 
     Sorting::createAlgorithms(algorithms);
+    BenchmarkArgs * benchmarkArgArr[threadCount];
 
     for (uint32_t i = 0; i < threadCount; i++) {
-      // This gets deleted in the thread
-      auto algPtr = new std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>(algorithms);
-      pthread_create(&threads[i], NULL, algorithmBenchmark, algPtr);
+      // This gets deleted in the thread - can actually delete it in join
+      benchmarkArgArr[i] = new BenchmarkArgs;
+      benchmarkArgArr[i]->algorithmQueue = algorithms;
+      benchmarkArgArr[i]->core_number = isolatedCpus[i];
+
+      pthread_create(&threads[i], nullptr, algorithmBenchmark, benchmarkArgArr[i]);
     }
 
     for (uint32_t i = 0; i < threadCount; i++) {
-      pthread_join(threads[i], NULL);
+      pthread_join(threads[i], nullptr);
+      delete benchmarkArgArr[i];
     }
 
     delete[] threads;
 }
 
 // measuring
-void * algorithmBenchmark(void * algSharedPtr) {
-    auto * algQueuePtr = static_cast<std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>*>(algSharedPtr);
-    auto algorithmQueue = *algQueuePtr;
+void * algorithmBenchmark(void * benchmarkArgs) {
+    auto * args = (BenchmarkArgs *) benchmarkArgs;
 
-    while (algorithmQueue->size() != 0) {
-        auto algoBenchmark = algorithmQueue->pop();
+    // Bind the thread to the isolated core
+    cpu_set_t cpu_set;
+    CPU_ZERO(&cpu_set);
+    CPU_SET(args->core_number, &cpu_set);
+    pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_set);
+
+    printf("Running only on core %d\n", args->core_number);
+
+    while (args->algorithmQueue->size() != 0) {
+        auto algoBenchmark = args->algorithmQueue->pop();
 
         // timeout happened - queue likely empty
         if (algoBenchmark == nullptr) {
@@ -193,7 +209,6 @@ void * algorithmBenchmark(void * algSharedPtr) {
         algoBenchmark->run();
     }
 
-    delete algQueuePtr;
     pthread_exit(nullptr);
 }
 
