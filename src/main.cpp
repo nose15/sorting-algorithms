@@ -10,10 +10,10 @@ void concurrentRun();
 void singleRun(const std::string& fileName, const std::filesystem::path& resultPath, std::unordered_map<std::string, std::string>& flags);
 void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::string>& flags);
 void runDialog();
-void * algorithmBenchmark(void * algSharedPtr);
+void * algorithmBenchmark(void * benchmarkArgs);
 
 struct BenchmarkArgs {
-  uint32_t core_number;
+  uint32_t core_number = -1;
   std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>> algorithmQueue;
 };
 
@@ -190,13 +190,13 @@ void concurrentRun() {
 void * algorithmBenchmark(void * benchmarkArgs) {
     auto * args = (BenchmarkArgs *) benchmarkArgs;
 
+    if (args->core_number == -1) return nullptr;
+
     // Bind the thread to the isolated core
     cpu_set_t cpu_set;
     CPU_ZERO(&cpu_set);
     CPU_SET(args->core_number, &cpu_set);
     pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpu_set);
-
-    printf("Running only on core %d\n", args->core_number);
 
     while (args->algorithmQueue->size() != 0) {
         auto algoBenchmark = args->algorithmQueue->pop();
@@ -211,6 +211,3 @@ void * algorithmBenchmark(void * benchmarkArgs) {
 
     pthread_exit(nullptr);
 }
-
-
-
