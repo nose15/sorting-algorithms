@@ -8,33 +8,53 @@
 #include <SortingAlgorithm.hpp>
 
 namespace Sorting {
+    enum Pivot {
+      RIGHT = 0,
+      LEFT = 1,
+      MIDDLE = 2,
+    };
+
     template <typename T>
     class QuickSort : public SortingAlgorithm<T> {
     private:
-        void quicksort(int32_t l, int32_t r) {
-            if (l >= r) return;
-            int32_t pivot = partition(l, r);
-            quicksort(l, pivot - 1);
-            quicksort(pivot + 1, r);
-        }
+        Pivot pivotMode = Pivot::LEFT;
 
-        int32_t partition(int32_t l, int32_t r) {
-            T pivot = this->arr[r];
-            int32_t i = l - 1;
+        void quicksort(int32_t l, int32_t r)
+        {
+          if(r <= l) return;
 
-            for (int32_t j = l; j < r; j++) {
-                if (this->arr[j] < pivot) {
-                    i++;
-                    std::swap(this->arr[i], this->arr[j]);
-                }
-            }
+          int32_t i = l - 1;
+          int32_t j = r + 1;
+          T pivot;
 
-            std::swap(this->arr[i + 1], this->arr[r]);
+          switch (pivotMode) {
+            case LEFT:   pivot = this->arr[l]; break;
+            case RIGHT:  pivot = this->arr[r]; break;
+            case MIDDLE: pivot = this->arr[(l + r) / 2]; break;
+          }
 
-            return i + 1;
+          while(1)
+          {
+            while(pivot > this->arr[++i]);
+
+            while(pivot < this->arr[--j]);
+
+            if( i <= j)
+              std::swap(this->arr[i],this->arr[j]);
+            else
+              break;
+          }
+
+          if(j > l)
+            quicksort(l, j);
+          if(i < r)
+            quicksort(i, r);
         }
     public:
         using SortingAlgorithm<T>::SortingAlgorithm;
+        QuickSort<T>(T * arr, size_t size, Pivot pivot) : SortingAlgorithm<T>(arr, size) {
+          pivotMode = pivot;
+        }
         T* sort() override {
             quicksort(0, this->size - 1);
             return this->arr;
