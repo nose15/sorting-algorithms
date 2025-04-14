@@ -37,19 +37,14 @@ namespace Sorting {
 
         void run() override {
             // get time before
-            std::cout << "Before: ";
-            for (size_t i = 0; i < size; i++) {
-                std::cout << arr[i] << " ";
-            }
-            std::cout << std::endl;
 
             T* sorted = sort();
 
-            std::cout << "After: ";
-            for (size_t i = 0; i < size; i++) {
-                std::cout << sorted[i] << " ";
-            }
-            std::cout << std::endl;
+            std::cout << "After: " << sorted[0] << std::endl;
+//            for (size_t i = 0; i < size; i++) {
+//                std::cout << sorted[i] << " ";
+//            }
+//            std::cout << std::endl;
 
             // get time after, get total time
 
