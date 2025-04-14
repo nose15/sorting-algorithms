@@ -12,6 +12,7 @@
 #include <memory>
 #include <filesystem>
 #include <fstream>
+#include <algorithm>
 
 namespace FileUtils {
 std::vector<uint8_t> parseInts(const std::string &line);

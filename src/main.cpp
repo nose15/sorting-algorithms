@@ -89,14 +89,14 @@ void runDialog() {
     switch (type) {
         case 1: {
             std::unique_ptr<int32_t[]> arr = generateArr<int32_t>(len, conf);
-            std::unique_ptr<Sorting::AlgorithmBenchmark> algorithmBenchmark = createBenchmark<int32_t>(
+            std::unique_ptr<Sorting::AlgorithmBenchmark> algorithmBenchmark = Sorting::createBenchmark<int32_t>(
                     static_cast<Sorting::Algorithm>(algorithm), std::move(arr), len);
             algorithmBenchmark->run();
             break;
         }
         case 2: {
             std::unique_ptr<double[]> arr = generateArr<double>(len, conf);
-            std::unique_ptr<Sorting::AlgorithmBenchmark> algorithmBenchmark = createBenchmark<double>(
+            std::unique_ptr<Sorting::AlgorithmBenchmark> algorithmBenchmark = Sorting::createBenchmark<double>(
                     static_cast<Sorting::Algorithm>(algorithm), std::move(arr), len);
             algorithmBenchmark->run();
             break;
