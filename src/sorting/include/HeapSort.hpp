@@ -7,6 +7,7 @@
 
 #include <cstring>
 #include <vector>
+#include <string>
 #include <SortingAlgorithm.hpp>
 
 namespace Sorting {
@@ -48,6 +49,11 @@ namespace Sorting {
           }
 
           return this->arr;
+        }
+
+        std::string getConfig() override {
+          std::string config_str = "heap_sort;" + this->config_info;
+          return config_str;
         }
 
         ~HeapSort() override = default;

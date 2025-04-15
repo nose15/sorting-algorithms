@@ -206,7 +206,8 @@ void * algorithmBenchmark(void * benchmarkArgs) {
             return nullptr;
         }
 
-        algoBenchmark->run();
+        double time = algoBenchmark->run();
+        std::string conf = algoBenchmark->getConfig() + std::to_string(time) + ";";
     }
 
     pthread_exit(nullptr);
