@@ -5,6 +5,7 @@
 #include <Sorting.hpp>
 #include <FileUtils.hpp>
 #include <Multithreading.hpp>
+#include <MeasurementUtils.hpp>
 
 void concurrentRun();
 void singleRun(const std::string& fileName, const std::filesystem::path& resultPath, std::unordered_map<std::string, std::string>& flags);
@@ -16,9 +17,6 @@ struct BenchmarkArgs {
   uint32_t core_number = -1;
   std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>> algorithmQueue;
 };
-
-template <typename T>
-std::unique_ptr<T[]> generateArr(size_t len, int32_t conf);
 
 int main(int argc, char** argv) {
     std::unordered_map<std::string, std::string> flags;
@@ -110,36 +108,6 @@ void runDialog() {
     }
 }
 
-// util
-template <typename T>
-std::unique_ptr<T[]> generateArr(size_t len, int32_t conf) {
-    std::unique_ptr<T[]> arr = std::make_unique<T[]>(len);
-
-    std::random_device rd; // obtain a random number from hardware
-    std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> dist(0, 10000); // define the range
-
-    for (int i = 0; i < len; i++) {
-        arr[i] = dist(gen);
-    }
-
-    switch (conf) {
-        case 2:
-            std::sort(arr.get(), arr.get() + (len / 3));
-            break;
-        case 3:
-            std::sort(arr.get(), arr.get() + (len / 3) * 2);
-            break;
-        case 4:
-            std::sort(arr.get(), arr.get() + len - 1);
-            break;
-        default:
-            break;
-    }
-
-    return std::move(arr);
-}
-
 // CLI method
 void readCLIArgs(int argc, char** argv, std::unordered_map<std::string, std::string>& flags) {
     for (int i = 1; i < argc; i++) {
@@ -208,7 +176,9 @@ void * algorithmBenchmark(void * benchmarkArgs) {
 
         double time = algoBenchmark->run();
         std::string conf = algoBenchmark->getConfig() + std::to_string(time) + ";";
+        printf("%s\n", conf.c_str());
     }
+
 
     pthread_exit(nullptr);
 }

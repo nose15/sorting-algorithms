@@ -27,7 +27,7 @@ namespace Sorting {
         }
 
         SortingAlgorithm(T * arr, size_t size, const std::string& config_info) {
-          this->config_info = "s=" + std::to_string(size) + ";conf=" + config_info + ";";
+          this->config_info = std::to_string(size) + ";" + config_info + ";";
           this->arr = new T[size];
           std::copy(arr, arr + size, this->arr);
           this->size = size;
