@@ -6,18 +6,44 @@
 
 namespace Sorting {
   void createAlgorithms(const std::shared_ptr<MultiThreading::BlockingQueue<Sorting::AlgorithmBenchmark>>& algorithmQueue) {
-    auto it = std::filesystem::directory_iterator("../data");
-    for (const auto & f : it) {
-      if (!f.is_regular_file()) break;
-      std::string path = f.path().string();
-      uint16_t first_ = path.find('_');
-      std::string datatype = path.substr(first_ + 1, 3);
+    int size[20]{1000, 2500, 5000, 7500, 10000, 25000, 30000, 35000, 40000, 45000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 200000, 400000, 600000};
 
-      if (datatype == "int") {
-        createBenchmarksFromFile<int32_t>(f, algorithmQueue);
-      }
-      else if (datatype == "flo") {
-        createBenchmarksFromFile<double>(f, algorithmQueue);
+    for (int i = 1; i <= 5; i++) {
+      for (int & s : size) {
+        // generate arr
+        auto intArr = generateArr<int32_t>(s,i);
+        auto floatArr = generateArr<double>(s,i);
+
+        algorithmQueue->push(std::make_unique<QuickSort<int32_t>>(intArr.get(), s, Pivot::LEFT, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<QuickSort<int32_t>>(intArr.get(), s, Pivot::RIGHT, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<QuickSort<int32_t>>(intArr.get(), s, Pivot::MIDDLE, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<QuickSort<double>>(floatArr.get(), s, Pivot::LEFT, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<QuickSort<double>>(floatArr.get(), s, Pivot::RIGHT, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<QuickSort<double>>(floatArr.get(), s, Pivot::MIDDLE, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<QuickSort<double>>(floatArr.get(), s, Pivot::MIDDLE, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<QuickSort<double>>(floatArr.get(), s, Pivot::MIDDLE, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<ShellSort<int32_t>>(intArr.get(), s, s / 2, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<ShellSort<int32_t>>(intArr.get(), s, s / 4, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<ShellSort<int32_t>>(intArr.get(), s, s / 8, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<ShellSort<int32_t>>(intArr.get(), s, s / 20, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<ShellSort<int32_t>>(intArr.get(), s, s / 40, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<ShellSort<double>>(floatArr.get(), s, s / 2, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<ShellSort<double>>(floatArr.get(), s, s / 4, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<ShellSort<double>>(floatArr.get(), s, s / 8, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<ShellSort<double>>(floatArr.get(), s, s / 20, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<ShellSort<double>>(floatArr.get(), s, s / 40, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<InsertionSort<int32_t>>(intArr.get(), s, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<InsertionSort<int32_t>>(intArr.get(), s, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<InsertionSort<int32_t>>(intArr.get(), s, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<InsertionSort<double>>(floatArr.get(), s, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<InsertionSort<double>>(floatArr.get(), s, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<InsertionSort<double>>(floatArr.get(), s, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<HeapSort<int32_t>>(intArr.get(), s, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<HeapSort<int32_t>>(intArr.get(), s, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<HeapSort<int32_t>>(intArr.get(), s, std::to_string(i) + ";int"));
+        algorithmQueue->push(std::make_unique<HeapSort<double>>(floatArr.get(), s, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<HeapSort<double>>(floatArr.get(), s, std::to_string(i) + ";double"));
+        algorithmQueue->push(std::make_unique<HeapSort<double>>(floatArr.get(), s, std::to_string(i) + ";double"));
       }
     }
   }

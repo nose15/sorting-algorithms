@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <algorithm>
 #include <AlgorithmBenchmark.hpp>
+#include <chrono>
+#include <utility>
 
 namespace Sorting {
 
@@ -17,13 +19,22 @@ namespace Sorting {
     protected:
         T * arr;
         size_t size;
+        std::string config_info;
     public:
         SortingAlgorithm() {
             arr = nullptr;
             size = 0;
         }
 
+        SortingAlgorithm(T * arr, size_t size, const std::string& config_info) {
+          this->config_info = std::to_string(size) + ";" + config_info + ";";
+          this->arr = new T[size];
+          std::copy(arr, arr + size, this->arr);
+          this->size = size;
+        }
+
         SortingAlgorithm(T * arr, size_t size) {
+            this->config_info = std::to_string(size) + ";;";
             this->arr = new T[size];
             std::copy(arr, arr + size, this->arr);
             this->size = size;
@@ -35,20 +46,13 @@ namespace Sorting {
 
         virtual T* sort() = 0;
 
-        void run() override {
-            // get time before
-
+        double run() override {
+            auto start = std::chrono::high_resolution_clock::now();
             T* sorted = sort();
+            auto end = std::chrono::high_resolution_clock::now();
 
-            std::cout << "After: " << sorted[0] << std::endl;
-//            for (size_t i = 0; i < size; i++) {
-//                std::cout << sorted[i] << " ";
-//            }
-//            std::cout << std::endl;
-
-            // get time after, get total time
-
-            // if properly sorted - save to file
+            std::chrono::duration<double> duration = end - start;
+            return duration.count();
         }
     };
 } // Sorting

@@ -6,9 +6,11 @@
 #define AIZO_1_FILEWRITER_HPP
 
 namespace Sorting {
-    class AlgorithmBenchmark {
+    class
+    AlgorithmBenchmark {
     public:
-        virtual void run() = 0;
+        virtual double run() = 0;
+        virtual std::string getConfig() = 0;
         virtual ~AlgorithmBenchmark() = default;
     };
 }

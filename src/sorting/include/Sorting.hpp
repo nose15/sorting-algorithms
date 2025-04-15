@@ -9,6 +9,7 @@
 #include "ShellSort.hpp"
 #include "Multithreading.hpp"
 #include "FileUtils.hpp"
+#include <MeasurementUtils.hpp>
 
 namespace Sorting {
   enum Algorithm {
@@ -54,7 +55,9 @@ namespace Sorting {
 
     algorithmQueue->push(std::make_unique<Sorting::HeapSort<T>>(arr.get(), len));
     algorithmQueue->push(std::make_unique<Sorting::InsertionSort<T>>(arr.get(), len));
-    algorithmQueue->push(std::make_unique<Sorting::QuickSort<T>>(arr.get(), len));
+    algorithmQueue->push(std::make_unique<Sorting::QuickSort<T>>(arr.get(), len, Sorting::Pivot::LEFT));
+    algorithmQueue->push(std::make_unique<Sorting::QuickSort<T>>(arr.get(), len, Sorting::Pivot::RIGHT));
+    algorithmQueue->push(std::make_unique<Sorting::QuickSort<T>>(arr.get(), len, Sorting::Pivot::MIDDLE));
     algorithmQueue->push(std::make_unique<Sorting::ShellSort<T>>(arr.get(), len));
   }
 }

@@ -40,7 +40,12 @@ namespace Sorting {
             return this->arr;
         }
 
-        ~InsertionSort() override = default;
+        std::string getConfig() override {
+          std::string config_str = "insertion_sort;" + this->config_info;
+          return config_str;
+        }
+
+      ~InsertionSort() override = default;
     };
 
 } // Sorting

@@ -15,6 +15,13 @@ namespace Sorting {
         uint32_t jump;
      public:
         using SortingAlgorithm<T>::SortingAlgorithm;
+        ShellSort<T>(T * arr, size_t size, uint32_t jump, std::string config_info) : SortingAlgorithm<T>(arr, size, config_info) {
+          if (jump > size) {
+            throw std::runtime_error("Jump cannot be bigger than size");
+          }
+          this->jump = jump;
+        }
+
         ShellSort<T>(T * arr, size_t size, uint32_t jump) : SortingAlgorithm<T>(arr, size) {
           if (jump > size) {
             throw std::runtime_error("Jump cannot be bigger than size");
@@ -43,6 +50,12 @@ namespace Sorting {
 
           return this->arr;
         }
+
+        std::string getConfig() override {
+          std::string config_str = "shell_sort;" + this->config_info + std::to_string(this->jump) + ";";
+          return config_str;
+        }
+
         ~ShellSort() override = default;
     };
 

@@ -52,6 +52,9 @@ namespace Sorting {
         }
     public:
         using SortingAlgorithm<T>::SortingAlgorithm;
+        QuickSort<T>(T * arr, size_t size, Pivot pivot, std::string config_info) : SortingAlgorithm<T>(arr, size, config_info) {
+          pivotMode = pivot;
+        }
         QuickSort<T>(T * arr, size_t size, Pivot pivot) : SortingAlgorithm<T>(arr, size) {
           pivotMode = pivot;
         }
@@ -59,7 +62,13 @@ namespace Sorting {
             quicksort(0, this->size - 1);
             return this->arr;
         }
-        ~QuickSort() override = default;
+
+        std::string getConfig() override {
+          std::string config_str = "quick_sort;" + this->config_info + std::to_string(this->pivotMode) + ";";
+          return config_str;
+        }
+
+      ~QuickSort() override = default;
     };
 
 } // Sorting
