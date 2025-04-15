@@ -17,7 +17,7 @@ TEST_P(HeapSortTest, TestAlgorithmCorrect) {
 
     bool sorted = true;
     for (int i = 0; i < size - 1; i++) {
-        if (res[i+1] <= res[i]) {
+        if (res[i+1] < res[i]) {
             sorted = false;
             break;
         }
