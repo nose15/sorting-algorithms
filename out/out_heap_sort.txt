@@ -1,0 +1,6 @@
+heap_sort;49;;0.000003;
+heap_sort;49;;0.000004;
+heap_sort;49;;0.000004;
+heap_sort;49;;0.000005;
+heap_sort;49;;0.000004;
+heap_sort;49;;0.000005;

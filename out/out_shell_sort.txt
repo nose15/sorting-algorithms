@@ -1,0 +1,6 @@
+shell_sort;49;;0;0.000000;
+shell_sort;49;;0;0.000000;
+shell_sort;49;;0;0.000000;
+shell_sort;49;;0;0.000000;
+shell_sort;49;;0;0.000000;
+shell_sort;49;;0;0.000000;

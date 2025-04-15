@@ -1,0 +1,6 @@
+insertion_sort;49;;0.000005;
+insertion_sort;49;;0.000004;
+insertion_sort;49;;0.000001;
+insertion_sort;49;;0.000000;
+insertion_sort;49;;0.000006;
+insertion_sort;49;;0.000004;
