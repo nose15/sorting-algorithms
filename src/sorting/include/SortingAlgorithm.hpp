@@ -37,7 +37,15 @@ namespace Sorting {
 
         void run() override {
             // get time before
+
             T* sorted = sort();
+
+            std::cout << "After: " << sorted[0] << std::endl;
+//            for (size_t i = 0; i < size; i++) {
+//                std::cout << sorted[i] << " ";
+//            }
+//            std::cout << std::endl;
+
             // get time after, get total time
 
             // if properly sorted - save to file
