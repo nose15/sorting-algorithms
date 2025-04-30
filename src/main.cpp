@@ -1,9 +1,7 @@
 #include <iostream>
 #include <filesystem>
 #include <set>
-#include <random>
 #include <Sorting.hpp>
-#include <FileUtils.hpp>
 #include <Multithreading.hpp>
 #include <MeasurementUtils.hpp>
 
@@ -60,52 +58,221 @@ void singleRun(const std::string& fileName, const std::filesystem::path& resultP
 
     auto algoBenchmark = Sorting::createBenchmarkFromFile(file, flags);
     std::cout << "Running algorithm " << std::endl;
-    algoBenchmark->run();
+    algoBenchmark->run(false);
     std::cout << "Finished running " << std::endl;
+}
+
+template <typename T>
+std::unique_ptr<T[]> sortUI(std::shared_ptr<T[]>& arr, int arr_size) {
+  int alg = 0;
+  while (alg < 1 || alg > 4) {
+    std::cout << "Pick a sorting algorithm:\n"
+                 "1. Insertion Sort\n"
+                 "2. Heap Sort\n"
+                 "3. Shell Sort\n"
+                 "4. QuickSort\n"
+                 "> ";
+    std::cin >> alg;
+
+    if (alg < 1 || alg > 4) {
+      std::cout << "WRONG INPUT" << std::endl;
+    }
+  }
+
+  std::unique_ptr<Sorting::SortingAlgorithm<T>> algorithm;
+
+  switch (alg) {
+    case 1:
+      algorithm = std::make_unique<Sorting::InsertionSort<T>>(arr.get(), arr_size);
+      break;
+    case 2:
+      algorithm = std::make_unique<Sorting::HeapSort<T>>(arr.get(), arr_size);
+      break;
+    case 3: {
+      int gapForm = 0;
+      while (gapForm != 1 && gapForm != 2) {
+        std::cout << "Pick gap formula\n"
+                     "1. Shell (N/(2^k))\n"
+                     "2. Hibbard (2^k - 1)\n"
+                     "> ";
+        std::cin >> gapForm;
+
+        if (gapForm != 1 && gapForm != 2) {
+          std::cout << "WRONG INPUT" << std::endl;
+        }
+      }
+
+      algorithm = std::make_unique<Sorting::ShellSort<T>>(arr.get(), arr_size, gapForm);
+      break;
+    }
+    case 4: {
+      int pivot = 0;
+      while (pivot < 1 || pivot > 4) {
+        std::cout << "Pick the pivot\n"
+                     "1. right\n"
+                     "2. left\n"
+                     "3. middle\n"
+                     "4. random\n"
+                     "> ";
+        std::cin >> pivot;
+
+        if (pivot < 1 || pivot > 4) {
+          std::cout << "WRONG INPUT" << std::endl;
+        }
+      }
+
+      algorithm = std::make_unique<Sorting::QuickSort<T>>(arr.get(), arr_size, Sorting::Pivot(pivot - 1));
+      break;
+    }
+    default:
+      exit(alg);
+  }
+
+  T* sorted = algorithm->sort();
+  T* sortedArr = new T[arr_size];
+  std::copy(sorted, sorted + arr_size, sortedArr);
+  std::cout << "Sorted array: " << std::endl;
+  for (int i = 0; i < arr_size; i++) {
+    std::cout << sortedArr[i] << " ";
+  }
+  std::cout << std::endl;
+
+  return std::unique_ptr<T[]>(sortedArr);
+}
+
+template <typename T>
+int generateArrayUI(std::shared_ptr<T[]>& arr) {
+  int arrSize = 0;
+  while (arrSize < 1) {
+    std::cout << "Array size: ";
+    std::cin >> arrSize;
+
+    if (arrSize < 1) {
+      std::cout << "WRONG INPUT";
+    }
+  }
+
+  int conf = 0;
+  while (conf < 1 || conf > 5) {
+    std::cout << "Array initial state:\n"
+                 "1. Random\n"
+                 "2. 33% sorted\n"
+                 "3. 66% sorted\n"
+                 "4. Fully sorted\n"
+                 "5. Sorted in reverse\n"
+                 "> ";
+    std::cin >> conf;
+
+    if (conf < 1 || conf > 5) {
+      std::cout << "WRONG INPUT" << std::endl;
+    }
+  }
+
+  arr = generateArr<T>(arrSize, conf);
+  std::cout << "Array generated successfully" << std::endl;
+  return arrSize;
+}
+
+
+template <typename T>
+int loadArray(std::shared_ptr<T[]>& arr) {
+  std::string fileName;
+
+  while (true) {
+    std::cout << "File name: ";
+    std::cin >> fileName;
+
+    try {
+      auto path = std::filesystem::path(std::filesystem::current_path().string() + "/" + fileName);
+      std::cout << "Trying to read: " << path << std::endl;
+      int len = FileUtils::readArr<T>(path, arr);
+      std::cout << "Array loaded successfully" << std::endl;
+      return len;
+    } catch (std::length_error &e) {
+      std::cout << "WRONG INPUT" << std::endl;
+      continue;
+    }
+  }
+}
+
+template <typename T>
+void executeDialog() {
+  std::shared_ptr<T[]> arr;
+  std::unique_ptr<T[]> sorted;
+
+  int arr_size = 0;
+
+  while (true) {
+    int operation = -1;
+    while (operation < 0 || operation > 5) {
+      std::cout << "What would you like to do?\n"
+                   "1. Load an array from file\n"
+                   "2. Generate an array\n"
+                   "3. Display the loaded array\n"
+                   "4. Sort the loaded array\n"
+                   "5. Display the sorted array\n"
+                   "0. Exit\n"
+                   "> ";
+
+      std::cin >> operation;
+
+      if (operation < 0 || operation > 5) {
+        std::cout << "WRONG INPUT" << std::endl;
+      }
+    }
+
+    switch (operation) {
+      case 1:
+        arr_size = loadArray<T>(arr);
+        break;
+      case 2:
+        arr_size = generateArrayUI<T>(arr);
+        break;
+      case 3:
+        for (int i = 0; i < arr_size; i++) {
+          std::cout << arr[i] << " ";
+        }
+        std::cout << std::endl;
+        break;
+      case 4:
+        sorted = std::move(sortUI<T>(arr, arr_size));
+        break;
+      case 5:
+        for (int i = 0; i < arr_size; i++) {
+          std::cout << sorted[i] << " ";
+        }
+        std::cout << std::endl;
+        break;
+      default:
+        std::cout << "Closing" << std::endl;
+        exit(operation);
+    }
+    std::cout << std::endl;
+  }
 }
 
 // CLI method
 void runDialog() {
-    size_t len;
-    std::cout << "Array Length: ";
-    std::cin >> len;
+  int dataType = 0;
+  while (dataType != 1 && dataType != 2) {
+    std::cout << "Pick a datatype (1. int, 2. float): ";
+    std::cin >> dataType;
 
-    int32_t type = 0;
-    while (type != 1 && type != 2) {
-        std::cout << "Data type (1. int (32-bit), 2. double): ";
-        std::cin >> type;
+    if (dataType != 1 && dataType != 2) {
+      std::cout << "WRONG INPUT " << (dataType == 1) << std::endl;
     }
+  }
 
-    int32_t conf = 0;
-    while (conf != 1 && conf != 2 && conf != 3 && conf != 4) {
-        std::cout << "Array configuration (threadCount. random, 2. 33% sorted, 3. 66% sorted, 4. sorted): ";
-        std::cin >> conf;
-    }
-
-    int32_t algorithm = 0;
-    while (algorithm != 1 && algorithm != 2 && algorithm != 3 && algorithm != 4) {
-        std::cout << "Algorithm (1. insertion, 2. heap, 3. quick, 4. shell): ";
-        std::cin >> algorithm;
-    }
-
-    switch (type) {
-        case 1: {
-            std::unique_ptr<int32_t[]> arr = generateArr<int32_t>(len, conf);
-            std::unique_ptr<Sorting::AlgorithmBenchmark> algorithmBenchmark = Sorting::createBenchmark<int32_t>(
-                    static_cast<Sorting::Algorithm>(algorithm), std::move(arr), len);
-            algorithmBenchmark->run();
-            break;
-        }
-        case 2: {
-            std::unique_ptr<double[]> arr = generateArr<double>(len, conf);
-            std::unique_ptr<Sorting::AlgorithmBenchmark> algorithmBenchmark = Sorting::createBenchmark<double>(
-                    static_cast<Sorting::Algorithm>(algorithm), std::move(arr), len);
-            algorithmBenchmark->run();
-            break;
-        }
-        default:
-            break;
-    }
+  switch (dataType) {
+    case 1:
+      executeDialog<int32_t>();
+      break;
+    case 2:
+      executeDialog<double>();
+      break;
+    default:
+      exit(dataType);
+  }
 }
 
 // CLI method
@@ -174,7 +341,7 @@ void * algorithmBenchmark(void * benchmarkArgs) {
             return nullptr;
         }
 
-        double time = algoBenchmark->run();
+        double time = algoBenchmark->run(false);
         std::string conf = algoBenchmark->getConfig() + std::to_string(time) + ";";
         printf("%s\n", conf.c_str());
     }
