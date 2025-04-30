@@ -12,6 +12,7 @@ namespace Sorting {
       RIGHT = 0,
       LEFT = 1,
       MIDDLE = 2,
+      RANDOM = 3
     };
 
     template <typename T>
@@ -29,8 +30,9 @@ namespace Sorting {
 
           switch (pivotMode) {
             case LEFT:   pivot = this->arr[l]; break;
-            case RIGHT:  pivot = this->arr[r]; break;
+            case RIGHT:  pivot = this->arr[r - 1]; break;
             case MIDDLE: pivot = this->arr[(l + r) / 2]; break;
+            case RANDOM: pivot = this->arr[l + (random() % (r - l))];break;
           }
 
           while(1)

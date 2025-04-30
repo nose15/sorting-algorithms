@@ -9,7 +9,7 @@ namespace Sorting {
     class
     AlgorithmBenchmark {
     public:
-        virtual double run() = 0;
+        virtual double run(bool log) = 0;
         virtual std::string getConfig() = 0;
         virtual ~AlgorithmBenchmark() = default;
     };

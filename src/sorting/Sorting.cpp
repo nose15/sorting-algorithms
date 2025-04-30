@@ -56,7 +56,7 @@ namespace Sorting {
       if (flags["algo"] == "heap") algorithm = HEAP;
       else if (flags["algo"] == "quick") algorithm = QUICK;
       else if (flags["algo"] == "shell") algorithm = SHELL;
-      else std::cout << "No such algorithm - defaulting to Insertion...";
+//      else std::cout << "No such algorithm - defaulting to Insertion...";
     }
 
     if (flags.find("type") != flags.end()) {
