@@ -17,10 +17,10 @@ std::unique_ptr<T[]> generateArr(size_t len, int32_t conf) {
 
   std::random_device rd; // obtain a random number from hardware
   std::mt19937 gen(rd()); // seed the generator
-  std::uniform_int_distribution<> dist(0, 10000); // define the range
+  std::uniform_real_distribution<> dist(0, 10000); // define the range
 
   for (uint32_t i = 0; i < len; i++) {
-    arr[i] = dist(gen);
+    arr[i] = (T)dist(gen);
   }
 
   switch (conf) {

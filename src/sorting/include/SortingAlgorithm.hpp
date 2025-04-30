@@ -46,10 +46,18 @@ namespace Sorting {
 
         virtual T* sort() = 0;
 
-        double run() override {
+        double run(bool log) override {
             auto start = std::chrono::high_resolution_clock::now();
             T* sorted = sort();
             auto end = std::chrono::high_resolution_clock::now();
+
+            if (log) {
+              std::cout << "Sorted: ";
+              for (int i = 0; i < this->size; i++) {
+                std::cout << sorted[i] << " ";
+              }
+              std::cout << std::endl;
+            }
 
             std::chrono::duration<double> duration = end - start;
             return duration.count();
