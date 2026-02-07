@@ -1,0 +1,133 @@
+diff --git a/src/sorting/Sorting.cpp b/src/sorting/Sorting.cpp
+index 48feb7d..0c92342 100644
+--- a/src/sorting/Sorting.cpp
++++ b/src/sorting/Sorting.cpp
+@@ -56,7 +56,7 @@ namespace Sorting {
+       if (flags["algo"] == "heap") algorithm = HEAP;
+       else if (flags["algo"] == "quick") algorithm = QUICK;
+       else if (flags["algo"] == "shell") algorithm = SHELL;
+-//      else std::cout << "No such algorithm - defaulting to Insertion...";
++      else std::cout << "No such algorithm - defaulting to Insertion...";
+     }
+ 
+     if (flags.find("type") != flags.end()) {
+diff --git a/src/sorting/include/QuickSort.hpp b/src/sorting/include/QuickSort.hpp
+index dbf8cf5..1fbb685 100644
+--- a/src/sorting/include/QuickSort.hpp
++++ b/src/sorting/include/QuickSort.hpp
+@@ -12,7 +12,6 @@ namespace Sorting {
+       RIGHT = 0,
+       LEFT = 1,
+       MIDDLE = 2,
+-      RANDOM = 3
+     };
+ 
+     template <typename T>
+@@ -30,9 +29,8 @@ namespace Sorting {
+ 
+           switch (pivotMode) {
+             case LEFT:   pivot = this->arr[l]; break;
+-            case RIGHT:  pivot = this->arr[r - 1]; break;
++            case RIGHT:  pivot = this->arr[r]; break;
+             case MIDDLE: pivot = this->arr[(l + r) / 2]; break;
+-            case RANDOM: pivot = this->arr[l + (random() % (r - l))];break;
+           }
+ 
+           while(1)
+diff --git a/src/sorting/include/ShellSort.hpp b/src/sorting/include/ShellSort.hpp
+index 74036a9..7599b94 100644
+--- a/src/sorting/include/ShellSort.hpp
++++ b/src/sorting/include/ShellSort.hpp
+@@ -7,74 +7,52 @@
+ 
+ #include <cstring>
+ #include <SortingAlgorithm.hpp>
+-#include <math.h>
+ 
+ namespace Sorting {
+-    enum GapFormula {
+-      GF_SHELL = 1,
+-      GF_HIBBARD = 2,
+-    };
+-
+     template <typename T>
+     class ShellSort : public SortingAlgorithm<T> {
+      private:
+-        GapFormula gap_formula;
++        uint32_t jump;
+      public:
+         using SortingAlgorithm<T>::SortingAlgorithm;
+-        ShellSort<T>(T * arr, size_t size, uint32_t gapFormula, std::string config_info) : SortingAlgorithm<T>(arr, size, config_info) {
+-          if (gapFormula > size) {
++        ShellSort<T>(T * arr, size_t size, uint32_t jump, std::string config_info) : SortingAlgorithm<T>(arr, size, config_info) {
++          if (jump > size) {
+             throw std::runtime_error("Jump cannot be bigger than size");
+           }
+-          this->gap_formula = GapFormula(gapFormula);
++          this->jump = jump;
+         }
+ 
+-        ShellSort<T>(T * arr, size_t size, uint32_t gapFormula) : SortingAlgorithm<T>(arr, size) {
+-          this->gap_formula = GapFormula(gapFormula);
++        ShellSort<T>(T * arr, size_t size, uint32_t jump) : SortingAlgorithm<T>(arr, size) {
++          if (jump > size) {
++            throw std::runtime_error("Jump cannot be bigger than size");
++          }
++          this->jump = jump;
+         }
+ 
+         T* sort() override {
+-          int * gaps = new int[this->size];
+-          int gap_size = 0;
+-
+-          if (this->gap_formula == GF_SHELL) {
+-            int s = 0;
+-
+-            for (int n = 1; n < this->size; n *= 2) {
+-              gaps[s] = n;
+-              s++;
+-            }
++          uint32_t gap = jump;
+ 
+-            gap_size = s;
+-          } else if (this->gap_formula == GF_HIBBARD) {
+-            int s = 0;
+-
+-            for (int n = 1; n < this->size; n = (n << 1) + 1) {
+-              gaps[s] = n;
+-              s++;
+-            }
+-
+-            gap_size = s;
+-          }
+-
+-          for (int g = gap_size - 1; g >= 0; g--) {
+-            for (uint32_t i = gaps[g]; i < this->size; ++i) {
++          while (gap > 0) {
++            for (uint32_t i = gap; i < this->size; ++i) {
+               T temp = this->arr[i];
+               uint32_t j = i;
+ 
+-              while (j >= gaps[g] && this->arr[j - gaps[g]] > temp) {
+-                this->arr[j] = this->arr[j - gaps[g]];
+-                j -= gaps[g];
++              while (j >= gap && this->arr[j - gap] > temp) {
++                this->arr[j] = this->arr[j - gap];
++                j -= gap;
+               }
+ 
+               this->arr[j] = temp;
+             }
++
++            gap /= 2;
+           }
+ 
+           return this->arr;
+         }
+ 
+         std::string getConfig() override {
+-          std::string config_str = "shell_sort;" + this->config_info + std::to_string(this->gap_formula) + ";";
++          std::string config_str = "shell_sort;" + this->config_info + std::to_string(this->jump) + ";";
+           return config_str;
+         }
+ 

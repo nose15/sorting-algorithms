@@ -21,19 +21,19 @@ namespace Sorting {
         size_t size;
         std::string config_info;
     public:
-        SortingAlgorithm() {
+        SortingAlgorithm<T>() {
             arr = nullptr;
             size = 0;
         }
 
-        SortingAlgorithm(T * arr, size_t size, const std::string& config_info) {
+        SortingAlgorithm<T>(T * arr, size_t size, const std::string& config_info) {
           this->config_info = std::to_string(size) + ";" + config_info + ";";
           this->arr = new T[size];
           std::copy(arr, arr + size, this->arr);
           this->size = size;
         }
 
-        SortingAlgorithm(T * arr, size_t size) {
+        SortingAlgorithm<T>(T * arr, size_t size) {
             this->config_info = std::to_string(size) + ";;";
             this->arr = new T[size];
             std::copy(arr, arr + size, this->arr);

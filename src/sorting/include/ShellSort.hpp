@@ -7,7 +7,6 @@
 
 #include <cstring>
 #include <SortingAlgorithm.hpp>
-#include <math.h>
 
 namespace Sorting {
     enum GapFormula {
@@ -21,14 +20,12 @@ namespace Sorting {
         GapFormula gap_formula;
      public:
         using SortingAlgorithm<T>::SortingAlgorithm;
-        ShellSort<T>(T * arr, size_t size, uint32_t gapFormula, std::string config_info) : SortingAlgorithm<T>(arr, size, config_info) {
-          if (gapFormula > size) {
-            throw std::runtime_error("Jump cannot be bigger than size");
-          }
+
+        ShellSort<T>(T * arr, size_t size, GapFormula gapFormula, std::string config_info) : SortingAlgorithm<T>(arr, size, config_info) {
           this->gap_formula = GapFormula(gapFormula);
         }
 
-        ShellSort<T>(T * arr, size_t size, uint32_t gapFormula) : SortingAlgorithm<T>(arr, size) {
+        ShellSort<T>(T * arr, size_t size, GapFormula gapFormula) : SortingAlgorithm<T>(arr, size) {
           this->gap_formula = GapFormula(gapFormula);
         }
 

@@ -102,7 +102,7 @@ std::unique_ptr<T[]> sortUI(std::shared_ptr<T[]>& arr, int arr_size) {
         }
       }
 
-      algorithm = std::make_unique<Sorting::ShellSort<T>>(arr.get(), arr_size, gapForm);
+      algorithm = std::make_unique<Sorting::ShellSort<T>>(arr.get(), arr_size, Sorting::GapFormula(gapForm));
       break;
     }
     case 4: {
@@ -308,6 +308,9 @@ void concurrentRun() {
       // This gets deleted in the thread - can actually delete it in join
       benchmarkArgArr[i] = new BenchmarkArgs;
       benchmarkArgArr[i]->algorithmQueue = algorithms;
+
+      std::cout << "Core " << isolatedCpus[i] << std::endl;
+
       benchmarkArgArr[i]->core_number = isolatedCpus[i];
 
       pthread_create(&threads[i], nullptr, algorithmBenchmark, benchmarkArgArr[i]);

@@ -12,12 +12,12 @@ namespace Sorting {
     template <typename T>
     class InsertionSort : public SortingAlgorithm<T> {
     private:
-        void shiftRight(uint16_t start, uint16_t end) {
+        void shiftRight(uint32_t start, uint32_t end) {
             if (end < start) {
                 return;
             }
 
-            for (int i = end; i > start; i--) {
+            for (uint32_t i = end; i > start; i--) {
                 this->arr[i] = this->arr[i - 1];
             }
         }
